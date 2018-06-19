@@ -72,9 +72,9 @@ var cip = (function(){
 	};
 
 	var init = function(parent, acl, sections, userData, sectionList){
-		var scriptArray = [];
+		var scriptArray = [dataPath+"cipForms.js?v="+Math.random()];
 		for(var i = 0; i < sectionList.length; i++){
-			scriptArray.push(sectionPath+sectionList[i][0]+".js");
+			scriptArray.push(sectionPath+sectionList[i][0]+".js?v="+Math.random());
 		}
 
 		var loaderPromise = scriptLoader.load(scriptArray);
