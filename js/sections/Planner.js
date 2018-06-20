@@ -1,14 +1,33 @@
 var Planner = (function(){
-    var plannerTab;
+    var projectInitiationTab;
+    var projectInitiationForm;
+    var currentPlanner;
+    var currentYear;
 
     var init = function(tabbar, sectionACL){
-        tabbar.addTab("planner", "Planner");
+        tabbar.addTab("projectInitiate", "Project Initiation");
 
-		plannerTab = tabbar.tabs("planner");
+		projectInitiationTab = tabbar.tabs("projectInitiate");
 
-        plannerTab.setActive();
+        projectInitiationTab.setActive();
         
-        plannerTab.attachForm(cipForms.projectInitiationFormData);
+        projectInitiationForm = projectInitiationTab.attachForm(cipForms.projectInitiationFormData);
+
+        projectInitiationForm.getCombo("location").load(cip.getPaths("connectors")+"location_connector.php");
+
+        currentYear = (new Date()).getFullYear();
+        var legacyYearCombo =  projectInitiationForm.getCombo("legacyYear");
+            legacyYearCombo.addOption("FY"+(currentYear-1), "FY"+(currentYear-1));
+            legacyYearCombo.addOption("FY"+(currentYear), "FY"+(currentYear));
+
+            for(var i = 1; i < 6; i++){
+                legacyYearCombo.addOption("FY"+(currentYear+i), "FY"+(currentYear+i));
+            }
+
+
+
+        currentPlanner = cip.getUserInfo()["fullName"];
+        projectInitiationForm.setItemValue("parkPlanner", currentPlanner);
     };
 
     return{

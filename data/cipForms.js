@@ -71,7 +71,7 @@ var cipForms = {
             {type: "block", width: "auto", blockOffset: "0", offsetTop: "20", list: [
                 {type: "label", label: "Park Planner:", value: "", labelWidth: "150"},
                 {type: "newcolumn"},
-                {type: "input", value: "", inputWidth: "300", name: "parkPlanner"}
+                {type: "input", value: "", inputWidth: "300", name: "parkPlanner", disabled: true}
             ]},
             {type: "block", width: "auto", blockOffset: "0", offsetTop: "20", list: [
                 {type: "label", label: "Estimated Project Budget:", value: "", labelWidth: "150"},
