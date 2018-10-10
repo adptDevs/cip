@@ -1,24 +1,16 @@
-/**
- * CIP - Entry point
- * This app utilizes the MVC pattern.
- * Each UI component will have it's own folder within the ./src folder
- */
 var cip = (function () {
     let appDir = "cip";
     let cip_model = null;
     let appPath = `/_apps/${appDir}/`;
     let sectionPath = `${appPath}/sections/`;
-    let appLayout = null;
-    let appObj = null;
-    let gridComponent = null;
-    let toolbarComponent = null;
-    let formComponent = null;
-    let appIsRunning = false;
-    let appLayoutParent = null;
+    let dataPath = `${appPath}/data/`;
+    let appCell = null;
+    //let oldSectionPath = appPath + "/sections/";
+
 
     const _initComponents = components => {
         for (let i = 0; i < components.length; i++) {
-            window[components[i]].init();
+            window[components[i]].init(appCell);
         }
     }
 
@@ -31,7 +23,11 @@ var cip = (function () {
             cip_model = new CIPMODEL();
 
             let componentsArray = [];
-            let componentScriptsArray = [];
+
+            let componentScriptsArray = [
+                dataPath+"cipForms.js?v=" + Math.random(),
+            ];
+            
             for (let i = 0; i < sectionList.length; i++) {
 
                 if (cip_model.scripts.hasOwnProperty(sectionList[i][0])) {
@@ -46,6 +42,7 @@ var cip = (function () {
             if (componentScriptsArray.length > 0) {
                 let componentLoaderPromise = scriptLoader.load(componentScriptsArray);
                 componentLoaderPromise.then(() => {
+                    appCell = parent;
                     _initComponents(componentsArray);
                 }, err => {
                     console.log(err);
