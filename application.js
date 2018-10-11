@@ -15,7 +15,9 @@ var cip = (function () {
     }
 
     const init = (parent, acl, sections, userInfo, sectionList) => {
-        let modelScript = `${appPath}cipModel.js?v=${Math.random()}`;
+        let modelScript = [`${appPath}cipHTTPService.js?v=${Math.random()}`,
+        `${appPath}cipModel.js?v=${Math.random()}`
+        ];
         Sentry.init({ dsn: 'https://ce68a3d8e7a34efb8cd2af75571631c7@sentry.io/1289078' });
 
         let loaderPromise = scriptLoader.load(modelScript);
@@ -25,9 +27,10 @@ var cip = (function () {
             let componentsArray = [];
 
             let componentScriptsArray = [
-                dataPath+"cipForms.js?v=" + Math.random(),
+                dataPath + "cipForms.js?v=" + Math.random(),
+                dataPath + "cipService.js?v=" + Math.random(),
             ];
-            
+
             for (let i = 0; i < sectionList.length; i++) {
 
                 if (cip_model.scripts.hasOwnProperty(sectionList[i][0])) {
@@ -59,28 +62,8 @@ var cip = (function () {
         });
     };
 
-    const post = (url, params) => {
-        let postPromise = cip_model.post(url, params);
-        postPromise.fail(err => {
-            Sentry.captureException(err);
-        });
-
-        return postPromise
-    };
-
-    const get = (url) => {
-        let getPromise = cip_model.get(url);
-        getPromise.fail(err => {
-            Sentry.captureException(err);
-        });
-
-        return getPromise;
-    }
-
     return {
-        runApp: init,
-        post: post,
-        get: get
+        runApp: init
     };
 
 })();

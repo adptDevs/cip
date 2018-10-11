@@ -1,7 +1,9 @@
 const _appConfig = new WeakMap();
 
-class CIPMODEL {
+class CIPMODEL extends HTTP_Service {
     constructor() {
+        super();
+
         _appConfig.set(this, {
             "_scripts": {
                 "Admin": [
