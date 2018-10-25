@@ -127,6 +127,20 @@ var projectView = (function () {
 
     }
 
+    const _populateGrid = async () => {
+        try {
+            const result = await cip_service.getProjects();
+            console.log(result);
+        } catch (error) {
+            console.log(error);
+            dhtmlx.message({
+                type: "error",
+                text: "Unable to load projects",
+                expire: -1
+            });
+        }
+    };
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -135,6 +149,7 @@ var projectView = (function () {
     const init = (cell) => {
 
         cip_service = new CIP_Service();
+
 
         /////////////////////
         ///    WINDOW   ////
@@ -227,6 +242,11 @@ var projectView = (function () {
         ////////////////////////
 
         appWindow.window('addProject_WINDOW').hide();
+
+        ///////////////////////
+        ///   SERVICE CALLS //
+        //////////////////////
+        _populateGrid();
 
         /////////////////////                                                                            
         ///   EVENTS    ////

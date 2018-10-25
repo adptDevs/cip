@@ -1,4 +1,5 @@
 <?php
+define('IN_ADPT', true);
 
 // Abstracting from DHTMLX connectors
 
@@ -18,7 +19,7 @@ class Database_Service {
 
     public function __construct($db) {
         $this->db = $db;
-        createDBConnection();
+        $this->createDBConnection();
         $this->componentKey = createComponentKey();
     }
 
@@ -34,38 +35,58 @@ class Database_Service {
         $this->connection = sqlsrv_connect($sql_server, $this->connectionInfo);
     }
 
-    public function insertData($insertStatement) {
+    public function insertData($values, $table) {
+        $statement = "INSERT INTO " . $table
+        $columnClause = "(";
+        $valueClause = " VALUES (";
+        foreach ($values as $key => $value) {
+            $columnClause .= $key . ",";
+            $valueClause .= $value . ",";
+        }
 
+        $columnClause = rtrim($columnClause, ",");
+        $valueClause = rtrim($valueClause, ",");
+
+        $statement .= $columnClause . $valueClause;
+
+        // Try catch
     }
 
-    public function getData($component, $table, $columns, $conditions, $primaryKey) {
-        if (array_key_exists($component, $this->componentKey)) {
-            require($this->dataConnectionPath . $this->componentKey[$component]);
-            $objConnector = null;
-            $query = _createQueryStatement($table, $columns, $conditions, $primaryKey);
+    public function deleteData($id, $tableId, $table) {
+        $statement = "DELETE FROM " . $table . " WHERE " . $tableId . " = " . $id;
 
-            switch($component) {
-                case "grid":
-                    $objConnector = new GridConnector($this->connectionInfo, $this->dbDriverName);
-                    break;
+        // Try catch
+    }
 
-                case "combo":
-                    break;
+    public function getData($table, $conditions = [], $columns = "*") {
+        $statement = "SELECT " . $columns . " FROM " . $table;
 
-                default:
-                    break;
+        if (count($conditions) > 0) {
+            $whereClause = " WHERE ";
+            foreach ($conditions as $key => $condition) {
+                $whereClause .= $key . " = " . $condition["value"] . " " . $condition["conjunction"];
             }
+
+            $statement .= $whereClause;
+        }
+
+        // Try catch
+    }
+
+    private function executeQuery($query) {
+        $res = sqlsrv_query($this->connection, $query);
+        if ($res === false) {
+            return $this->getDBErrors();
+        } else {
+            return sqlsrv_fetch_array( $res, SQLSRV_FETCH_ASSOC );
         }
     }
 
-    private function _createQueryStatement($table, $columns, $conditions, $primaryKey) {
-        $query = "SELECT " . $columns . " FROM " . $table;
-
-        $where = "";
-        for ($i = 0; $i < count($conditions); $i++) {
-            $where
+    private function getDBErrors() {
+        if(($errors = sqlsrv_errors() ) != null) {
+            return $errors;
         }
-
+        return null;
     }
 
     private function createComponentKey() {

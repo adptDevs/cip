@@ -15,17 +15,22 @@ class CIP_Service extends HTTP_Service {
                 "_url": "/_apps/cip/data/cipService.php",
                 "_api": "projects",
                 "_request": "deleteProject"
+            },
+            "getProjects": {
+                "_url": "/_apps/cip/data/cipService.php",
+                "_api": "projects",
+                "_request": "getProjects"
             }
         });
     }
 
     getApiUrl(request) {
-        return _apiEndpoint.get(this) + "?api=" + request;
+        //return _apiEndpoint.get(this) + "?api=" + request;
 
         let endPoint = _apiEndpoint.get(this)[request];
         let url = endPoint._url;
         let api = endPoint._api;
-        let request = endPoint._request;
+        //let request = endPoint._request;
 
         return url + "?api=" + api + "&request=" + request;
     }
@@ -37,13 +42,16 @@ class CIP_Service extends HTTP_Service {
             }
 
             let promise = this.post(this.getApiUrl("addProject"), params).then(realdata => {
-
+                return JSON.parse(realdata);
             }).fail(err => {
                 console.log(err);
+                return null;
+            });
 
-            })
+            return promise;
         } catch (error) {
-            console.log();
+            console.log(error);
+            return null;
         }
     }
 
@@ -54,13 +62,33 @@ class CIP_Service extends HTTP_Service {
             }
 
             let promise = this.post(this.getApiUrl("deleteProject"), params).then(realdata => {
-
+                return JSON.parse(realdata);
             }).fail(err => {
                 console.log(err);
+                return null;
+            });
 
-            })
+            return promise;
         } catch (error) {
-            console.log();
+            console.log(error);
+            return null;
+        }
+    }
+
+    getProjects() {
+        try {
+            let promise = this.get(this.getApiUrl("getProjects")).then(realdata => {
+                console.log(realdata);
+                return JSON.parse(realdata);
+            }).fail(err => {
+                console.log(err);
+                return null;
+            });
+
+            return promise;
+        } catch (error) {
+            console.log(error);
+            return null;
         }
     }
 }

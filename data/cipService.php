@@ -1,6 +1,6 @@
 <?php
 
-require("/_apps/cip/data/papApi/projectService.php");
+require("/_apps/cip/data/cipApi/projectService.php");
 
 define ("API", serialize (
     array(
@@ -28,9 +28,11 @@ $request = $_GET["request"];
 if (isset($_POST["params"])) $parameters = json_decode($_POST["params"]);
 
 $apiObj = unserialize(API)[$api];
-    
-foreach($parameters as $key => $value) {
-    $apiObj->set($key, $value);
+
+if ($parameters !== null) {
+    foreach($parameters as $key => $value) {
+        $apiObj->set($key, $value);
+    }
 }
 
 $response = $apiObj->requests($request);
