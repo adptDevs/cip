@@ -127,10 +127,20 @@ var projectView = (function () {
 
     }
 
+    const _gridOnSelect = () => {
+        grid.attachEvent("onRowSelect", (id, ind) => {
+            let projectData = JSON.stringify(cip_service.getProject(id), null, 4);
+            layout.cells("b").attachHTMLString(`<pre>${projectData}</pre>`);
+        });
+    };
+
     const _populateGrid = async () => {
         try {
             const result = await cip_service.getProjects();
-            console.log(result);
+
+            for (let key in result) {
+                grid.addRow(key, `${result[key].projectName}, ${result[key].submitDate}, ${result[key].isApproved}`);
+            }
         } catch (error) {
             console.log(error);
             dhtmlx.message({
@@ -224,7 +234,7 @@ var projectView = (function () {
             {
                 "columnName": "APPROVED",
                 "filter": "#select_filter",
-                "type": "ck",
+                "type": "ro",
                 "align": "left",
                 "sort": "str",
                 "width": "200",
@@ -255,6 +265,7 @@ var projectView = (function () {
         _toolbarOnClick();
         _windowOnClose();
         _submitBtn();
+        _gridOnSelect();
 
     };
 

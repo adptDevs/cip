@@ -1,5 +1,6 @@
 // Service classes
 const _apiEndpoint = new WeakMap();
+const _projectList = new WeakMap();
 
 class CIP_Service extends HTTP_Service {
     constructor() {
@@ -22,6 +23,8 @@ class CIP_Service extends HTTP_Service {
                 "_request": "getProjects"
             }
         });
+
+        _projectList.set(this, {});
     }
 
     getApiUrl(request) {
@@ -78,7 +81,7 @@ class CIP_Service extends HTTP_Service {
     getProjects() {
         try {
             let promise = this.get(this.getApiUrl("getProjects")).then(realdata => {
-                console.log(realdata);
+                _projectList.set(this, JSON.parse(realdata));
                 return JSON.parse(realdata);
             }).fail(err => {
                 console.log(err);
@@ -90,5 +93,10 @@ class CIP_Service extends HTTP_Service {
             console.log(error);
             return null;
         }
+    }
+
+    getProject(id) {
+        let projectList = _projectList.get(this);
+        return projectList[id];
     }
 }
